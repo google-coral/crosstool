@@ -13,6 +13,8 @@
 # limitations under the License.
 """Rules for configuring the C++ cross-toolchain."""
 
+load(":windows_cc_configure.bzl", "configure_windows_toolchain")
+
 def _impl(repository_ctx):
     dir_labels = repository_ctx.attr.additional_system_include_directories
     additional_include_dirs = ", ".join([
@@ -20,9 +22,8 @@ def _impl(repository_ctx):
         for dir_label in dir_labels
     ])
 
-    gcc_version = repository_ctx.execute(["/bin/bash", "-c", "gcc -dumpversion | cut -f1 -d."]).stdout
+    gcc_version = repository_ctx.execute(["/bin/bash", "-c", "gcc -dumpversion | cut -f1 -d."]).stdout or "0"
     bcm2708_toolchain_root = repository_ctx.os.environ.get("BCM2708_TOOLCHAIN_ROOT", "/tools/arm-bcm2708")
-    repository_ctx.symlink(Label("//:BUILD.tpl"), "BUILD")
     repository_ctx.template(
         "cc_toolchain_config.bzl",
         Label("//:cc_toolchain_config.bzl.tpl"),
@@ -33,6 +34,12 @@ def _impl(repository_ctx):
             "%{bcm2708_toolchain_root}%": bcm2708_toolchain_root,
             "%{additional_system_include_directories}%": additional_include_dirs,
         },
+    )
+    template_vars = configure_windows_toolchain(repository_ctx)
+    repository_ctx.template(
+        "BUILD",
+        Label("//:BUILD.tpl"),
+        template_vars,
     )
 
 cc_crosstool = repository_rule(
