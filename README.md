@@ -2,7 +2,8 @@
 
 [Bazel](https://bazel.build) build system supports integration with custom C/C++
 toolchains. This project defines toolchains for x86_64 (64 bit), ARMv7-A (32 bit),
-and ARMv8-A (64 bit) processors based on the standard Linux crosstool packages.
+and ARMv8-A (64 bit) processors based on the standard Linux crosstool packages,
+as well as for Windows x86_64 and ARM64 using Visual Studio.
 
 The steps below describe how to setup cross-compilation for projects at
 github.com/google-coral/.
@@ -10,12 +11,16 @@ github.com/google-coral/.
 
 ### Step 1: Install required crosstool packages
 
+For dpkg-based Linux systems (e.g. Debian, Ubuntu)
+
 ```
 dpkg --add-architecture armhf
 dpkg --add-architecture arm64
 
 apt-get update && apt-get install -y build-essential crossbuild-essential-armhf crossbuild-essential-arm64
 ```
+
+For Windows, install Visual Studio 2017 or newer.
 
 ### Step 2: Update `WORKSPACE` file
 
@@ -66,4 +71,15 @@ To compile for ARMv8-A (e.g. Coral Dev Board):
 
 ```
 bazel build --crosstool_top=@crosstool//:toolchains --compiler=gcc --cpu=aarch64 <OPTIONS>
+```
+To compile for Windows x86_64:
+
+```
+bazel build --crosstool_top=@crosstool//:toolchains --compiler=msvc-cl-x64
+```
+
+To compile for Windows ARM64:
+
+```
+bazel build --crosstool_top=@crosstool//:toolchains --compiler=msvc-cl-arm64 --host_crosstool_top=@crosstool//:toolchains --host_compiler=msvc-cl-x64
 ```
