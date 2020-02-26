@@ -125,6 +125,13 @@ TARGET_SYSTEM_NAME = {
     "aarch64": "aarch64-linux-gnu",
 }
 
+COMPILE_FLAGS = {
+    "k8":      ["-msse4.2"],
+    "armv7a":  ["-march=armv7-a", "-mfpu=neon-vfpv4"],
+    "armv6":   [],
+    "aarch64": ["-march=armv8-a"],
+}
+
 COMMON_OPT_COMPILE_FLAGS = [
     "-g0",
     "-O3",
@@ -134,26 +141,16 @@ COMMON_OPT_COMPILE_FLAGS = [
     "-fdata-sections",
 ]
 
-OPT_COMPILE_FLAGS = {
-    "k8": COMMON_OPT_COMPILE_FLAGS + [
-        "-msse4.2",
-    ],
-    "armv7a": COMMON_OPT_COMPILE_FLAGS + [
-        "-march=armv7-a",
-        "-mfpu=neon-vfpv4",
-        "-funsafe-math-optimizations",
-        "-ftree-vectorize",
-    ],
-    "armv6": COMMON_OPT_COMPILE_FLAGS + [
-        "-funsafe-math-optimizations",
-        "-ftree-vectorize",
-    ],
+NON_K8_OPT_COMPILE_FLAGS = [
+    "-funsafe-math-optimizations",
+    "-ftree-vectorize",
+]
 
-    "aarch64": COMMON_OPT_COMPILE_FLAGS + [
-        "-march=armv8-a",
-        "-funsafe-math-optimizations",
-        "-ftree-vectorize",
-    ],
+OPT_COMPILE_FLAGS = {
+    "k8":      COMMON_OPT_COMPILE_FLAGS,
+    "armv7a":  COMMON_OPT_COMPILE_FLAGS + NON_K8_OPT_COMPILE_FLAGS,
+    "armv6":   COMMON_OPT_COMPILE_FLAGS + NON_K8_OPT_COMPILE_FLAGS,
+    "aarch64": COMMON_OPT_COMPILE_FLAGS + NON_K8_OPT_COMPILE_FLAGS,
 }
 
 def _impl(ctx):
@@ -206,7 +203,7 @@ def _impl(ctx):
             flag_set(
                 actions = ALL_COMPILE_ACTIONS,
                 flag_groups = [
-                    flag_group(flags = ["-g"])
+                    flag_group(flags = COMPILE_FLAGS[ctx.attr.cpu] + ["-g"])
                 ],
                 with_features = [with_feature_set(features = ["dbg"])],
             ),
@@ -214,7 +211,7 @@ def _impl(ctx):
                 actions = ALL_COMPILE_ACTIONS,
                 flag_groups = [
                     flag_group(
-                        flags = OPT_COMPILE_FLAGS[ctx.attr.cpu],
+                        flags = COMPILE_FLAGS[ctx.attr.cpu] + OPT_COMPILE_FLAGS[ctx.attr.cpu],
                     ),
                 ],
                 with_features = [with_feature_set(features = ["opt"])],
