@@ -105,6 +105,16 @@ CXX_BUILTIN_INCLUDE_DIRECTORIES = {
         "/usr/aarch64-linux-gnu/include",
         "/usr/include/aarch64-linux-gnu",
         "/usr/include",
+    ],
+    "riscv64": [
+        "/usr/riscv64-linux-gnu/include/c++/%d" % GCC_VERSION,
+        "/usr/riscv64-linux-gnu/include/c++/%d/riscv64-linux-gnu" % GCC_VERSION,
+        "/usr/riscv64-linux-gnu/include/c++/%d/backward" % GCC_VERSION,
+        "/usr/lib/gcc-cross/riscv64-linux-gnu/%d/include" % GCC_VERSION,
+        "/usr/lib/gcc-cross/riscv64-linux-gnu/%d/include-fixed" % GCC_VERSION,
+        "/usr/riscv64-linux-gnu/include",
+        "/usr/include/riscv64-linux-gnu",
+        "/usr/include",
     ]
 }
 
@@ -115,6 +125,7 @@ TOOL_PATH_PREFIX = {
     "armv7a":  "/usr/bin/arm-linux-gnueabihf-",
     "armv6":   "%{bcm2708_toolchain_root}%/arm-linux-gnueabihf/bin/arm-linux-gnueabihf-",
     "aarch64": "/usr/bin/aarch64-linux-gnu-",
+    "riscv64": "/usr/bin/riscv64-linux-gnu-",
 }
 
 HOST_SYSTEM_NAME = "x86_64-linux-gnu"
@@ -123,6 +134,7 @@ TARGET_SYSTEM_NAME = {
     "armv7a":  "arm-linux-gnueabihf",
     "armv6":   "arm-linux-gnueabihf",
     "aarch64": "aarch64-linux-gnu",
+    "riscv64": "riscv64-linux-gnu",
 }
 
 COMPILE_FLAGS = {
@@ -130,6 +142,7 @@ COMPILE_FLAGS = {
     "armv7a":  ["-march=armv7-a", "-mfpu=neon-vfpv4"],
     "armv6":   [],
     "aarch64": ["-march=armv8-a"],
+    "riscv64": [],
 }
 
 COMMON_OPT_COMPILE_FLAGS = [
@@ -151,6 +164,25 @@ OPT_COMPILE_FLAGS = {
     "armv7a":  COMMON_OPT_COMPILE_FLAGS + NON_K8_OPT_COMPILE_FLAGS,
     "armv6":   COMMON_OPT_COMPILE_FLAGS + NON_K8_OPT_COMPILE_FLAGS,
     "aarch64": COMMON_OPT_COMPILE_FLAGS + NON_K8_OPT_COMPILE_FLAGS,
+    "riscv64": COMMON_OPT_COMPILE_FLAGS + NON_K8_OPT_COMPILE_FLAGS,
+}
+
+COMMON_LINKER_FLAGS = [
+    "-lstdc++",
+    "-lm",
+    "-Wl,-no-as-needed",
+    "-Wl,-z,relro,-z,now",
+    "-Wall",
+    "-pass-exit-codes",
+]
+
+GOLD_LINKER_FLAG = "-fuse-ld=gold"
+LINKER_FLAGS = {
+    "k8":      [GOLD_LINKER_FLAG],
+    "armv7a":  [GOLD_LINKER_FLAG],
+    "armv6":   [GOLD_LINKER_FLAG],
+    "aarch64": [GOLD_LINKER_FLAG],
+    "riscv64": [],
 }
 
 def _impl(ctx):
@@ -279,15 +311,7 @@ def _impl(ctx):
                 actions = ALL_LINK_ACTIONS,
                 flag_groups = [
                     flag_group(
-                        flags = [
-                            "-lstdc++",
-                            "-lm",
-                            "-fuse-ld=gold",
-                            "-Wl,-no-as-needed",
-                            "-Wl,-z,relro,-z,now",
-                            "-Wall",
-                            "-pass-exit-codes",
-                        ],
+                        flags = COMMON_LINKER_FLAGS + LINKER_FLAGS[ctx.attr.cpu]
                     ),
                 ],
             ),
@@ -355,7 +379,7 @@ def _impl(ctx):
 cc_toolchain_config = rule(
     implementation = _impl,
     attrs = {
-        "cpu": attr.string(mandatory = True, values = ["armv7a", "armv6", "aarch64", "k8"]),
+        "cpu": attr.string(mandatory = True, values = ["armv7a", "armv6", "aarch64", "k8", "riscv64"]),
     },
     provides = [CcToolchainConfigInfo],
 )

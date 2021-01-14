@@ -32,6 +32,8 @@ cc_toolchain_suite(
       "armv6|gcc"  : ":cc-compiler-armv6",
       "k8"         : ":cc-compiler-k8",
       "k8|gcc"     : ":cc-compiler-k8",
+      "riscv64"    : ":cc-compiler-riscv64",
+      "riscv64|gcc": ":cc-compiler-riscv64",
       "x64_windows|msvc-cl": ":cc-compiler-x64_windows",
       "x64_windows|msvc-cl-x64": ":cc-compiler-x64_windows",
       "x64_windows|msvc-cl-arm64": "cc-compiler-arm64_windows",
@@ -108,6 +110,34 @@ cc_toolchain(
     objcopy_files = ":empty",
     strip_files = ":empty",
     supports_param_files = 1,
+)
+
+cc_toolchain(
+    name = "cc-compiler-riscv64",
+    toolchain_config = ":riscv64-config",
+
+    all_files = ":empty",
+    compiler_files = ":empty",
+    dwp_files = ":empty",
+    linker_files = ":empty",
+    objcopy_files = ":empty",
+    strip_files = ":empty",
+)
+
+cc_toolchain_config(name = "riscv64-config", cpu = "riscv64")
+
+toolchain(
+    name = "cc-toolchain-riscv64",
+    exec_compatible_with = [
+        "@platforms//cpu:riscv64",
+        "@platforms//os:linux",
+    ],
+    target_compatible_with = [
+        "@platforms//cpu:riscv64",
+        "@platforms//os:linux",
+    ],
+    toolchain = ":cc-compiler-riscv64",
+    toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
 )
 
 windows_cc_toolchain_config(
