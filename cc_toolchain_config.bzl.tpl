@@ -115,6 +115,26 @@ CXX_BUILTIN_INCLUDE_DIRECTORIES = {
         "/usr/riscv64-linux-gnu/include",
         "/usr/include/riscv64-linux-gnu",
         "/usr/include",
+    ],
+    "s390x": [
+        "/usr/s390x-linux-gnu/include/c++/%d" % GCC_VERSION,
+        "/usr/s390x-linux-gnu/include/c++/%d/s390x-linux-gnu" % GCC_VERSION,
+        "/usr/s390x-linux-gnu/include/c++/%d/backward" % GCC_VERSION,
+        "/usr/lib/gcc-cross/s390x-linux-gnu/%d/include" % GCC_VERSION,
+        "/usr/lib/gcc-cross/s390x-linux-gnu/%d/include-fixed" % GCC_VERSION,
+        "/usr/s390x-linux-gnu/include",
+        "/usr/include/s390x-linux-gnu",
+        "/usr/include",
+    ],
+    "ppc64el": [
+        "/usr/powerpc64le-linux-gnu/include/c++/%d" % GCC_VERSION,
+        "/usr/powerpc64le-linux-gnu/include/c++/%d/powerpc64le-linux-gnu" % GCC_VERSION,
+        "/usr/powerpc64le-linux-gnu/include/c++/%d/backward" % GCC_VERSION,
+        "/usr/lib/gcc-cross/powerpc64le-linux-gnu/%d/include" % GCC_VERSION,
+        "/usr/lib/gcc-cross/powerpc64le-linux-gnu/%d/include-fixed" % GCC_VERSION,
+        "/usr/powerpc64le-linux-gnu/include",
+        "/usr/include/powerpc64le-linux-gnu",
+        "/usr/include",
     ]
 }
 
@@ -126,6 +146,8 @@ TOOL_PATH_PREFIX = {
     "armv6":   "%{bcm2708_toolchain_root}%/arm-linux-gnueabihf/bin/arm-linux-gnueabihf-",
     "aarch64": "/usr/bin/aarch64-linux-gnu-",
     "riscv64": "/usr/bin/riscv64-linux-gnu-",
+    "s390x": "/usr/bin/s390x-linux-gnu-",
+    "ppc64el": "/usr/bin/powerpc64le-linux-gnu-",
 }
 
 HOST_SYSTEM_NAME = "x86_64-linux-gnu"
@@ -135,6 +157,8 @@ TARGET_SYSTEM_NAME = {
     "armv6":   "arm-linux-gnueabihf",
     "aarch64": "aarch64-linux-gnu",
     "riscv64": "riscv64-linux-gnu",
+    "s390x":   "s390x-linux-gnu",
+    "ppc64el": "powerpc64le-linux-gnu",
 }
 
 COMPILE_FLAGS = {
@@ -143,6 +167,8 @@ COMPILE_FLAGS = {
     "armv6":   [],
     "aarch64": ["-march=armv8-a"],
     "riscv64": [],
+    "s390x": [],
+    "ppc64el": [],
 }
 
 COMMON_OPT_COMPILE_FLAGS = [
@@ -165,6 +191,8 @@ OPT_COMPILE_FLAGS = {
     "armv6":   COMMON_OPT_COMPILE_FLAGS + NON_K8_OPT_COMPILE_FLAGS,
     "aarch64": COMMON_OPT_COMPILE_FLAGS + NON_K8_OPT_COMPILE_FLAGS,
     "riscv64": COMMON_OPT_COMPILE_FLAGS + NON_K8_OPT_COMPILE_FLAGS,
+    "s390x":   COMMON_OPT_COMPILE_FLAGS + NON_K8_OPT_COMPILE_FLAGS,
+    "ppc64el": COMMON_OPT_COMPILE_FLAGS + NON_K8_OPT_COMPILE_FLAGS,
 }
 
 COMMON_LINKER_FLAGS = [
@@ -183,6 +211,8 @@ LINKER_FLAGS = {
     "armv6":   [GOLD_LINKER_FLAG],
     "aarch64": [GOLD_LINKER_FLAG],
     "riscv64": [],
+    "s390x":   [GOLD_LINKER_FLAG],
+    "ppc64el": [GOLD_LINKER_FLAG],
 }
 
 def _impl(ctx):

@@ -34,6 +34,10 @@ cc_toolchain_suite(
       "k8|gcc"     : ":cc-compiler-k8",
       "riscv64"    : ":cc-compiler-riscv64",
       "riscv64|gcc": ":cc-compiler-riscv64",
+      "s390x"      : ":cc-compiler-s390x",
+      "s390x|gcc"  : ":cc-compiler-s390x",
+      "ppc64el"    : ":cc-compiler-ppc64el",
+      "ppc64el|gcc": ":cc-compiler-ppc64el",
       "x64_windows|msvc-cl": ":cc-compiler-x64_windows",
       "x64_windows|msvc-cl-x64": ":cc-compiler-x64_windows",
       "x64_windows|msvc-cl-arm64": "cc-compiler-arm64_windows",
@@ -139,6 +143,63 @@ toolchain(
     toolchain = ":cc-compiler-riscv64",
     toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
 )
+
+cc_toolchain(
+    name = "cc-compiler-s390x",
+    toolchain_config = ":s390x-config",
+
+    all_files = ":empty",
+    compiler_files = ":empty",
+    dwp_files = ":empty",
+    linker_files = ":empty",
+    objcopy_files = ":empty",
+    strip_files = ":empty",
+)
+
+cc_toolchain_config(name = "s390x-config", cpu = "s390x")
+
+toolchain(
+    name = "cc-toolchain-s390x",
+    exec_compatible_with = [
+        "@platforms//cpu:s390x",
+        "@platforms//os:linux",
+    ],
+    target_compatible_with = [
+        "@platforms//cpu:s390x",
+        "@platforms//os:linux",
+    ],
+    toolchain = ":cc-compiler-s390x",
+    toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
+)
+
+cc_toolchain(
+    name = "cc-compiler-ppc64el",
+    toolchain_config = ":ppc64el-config",
+
+    all_files = ":empty",
+    compiler_files = ":empty",
+    dwp_files = ":empty",
+    linker_files = ":empty",
+    objcopy_files = ":empty",
+    strip_files = ":empty",
+)
+
+cc_toolchain_config(name = "ppc64el-config", cpu = "ppc64el")
+
+toolchain(
+    name = "cc-toolchain-ppc64el",
+    exec_compatible_with = [
+        "@platforms//cpu:ppc64el",
+        "@platforms//os:linux",
+    ],
+    target_compatible_with = [
+        "@platforms//cpu:ppc64el",
+        "@platforms//os:linux",
+    ],
+    toolchain = ":cc-compiler-ppc64el",
+    toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
+)
+
 
 windows_cc_toolchain_config(
     name = "msvc_x64",
