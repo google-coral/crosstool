@@ -409,7 +409,7 @@ def _impl(ctx):
 cc_toolchain_config = rule(
     implementation = _impl,
     attrs = {
-        "cpu": attr.string(mandatory = True, values = ["armv7a", "armv6", "aarch64", "k8", "riscv64"]),
+        "cpu": attr.string(mandatory = True, values = ["armv7a", "armv6", "aarch64", "k8", "riscv64", "s390x", "ppc64el"]),
     },
     provides = [CcToolchainConfigInfo],
 )
