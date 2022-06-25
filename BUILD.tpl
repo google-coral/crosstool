@@ -24,20 +24,22 @@ filegroup(name = "empty")
 cc_toolchain_suite(
     name = "toolchains",
     toolchains = {
-      "aarch64"    : ":cc-compiler-aarch64",
-      "aarch64|gcc": ":cc-compiler-aarch64",
-      "armv7a"     : ":cc-compiler-armv7a",
-      "armv7a|gcc" : ":cc-compiler-armv7a",
-      "armv6"      : ":cc-compiler-armv6",
-      "armv6|gcc"  : ":cc-compiler-armv6",
-      "k8"         : ":cc-compiler-k8",
-      "k8|gcc"     : ":cc-compiler-k8",
-      "riscv64"    : ":cc-compiler-riscv64",
-      "riscv64|gcc": ":cc-compiler-riscv64",
-      "s390x"      : ":cc-compiler-s390x",
-      "s390x|gcc"  : ":cc-compiler-s390x",
-      "ppc64el"    : ":cc-compiler-ppc64el",
-      "ppc64el|gcc": ":cc-compiler-ppc64el",
+      "aarch64"         : ":cc-compiler-aarch64",
+      "aarch64-musl"    : ":cc-compiler-aarch64-musl",
+      "aarch64|gcc"     : ":cc-compiler-aarch64",
+      "armv7a"          : ":cc-compiler-armv7a",
+      "armv7a|gcc"      : ":cc-compiler-armv7a",
+      "armv6"           : ":cc-compiler-armv6",
+      "armv6|gcc"       : ":cc-compiler-armv6",
+      "k8"              : ":cc-compiler-k8",
+      "k8|gcc"          : ":cc-compiler-k8",
+      "riscv64"         : ":cc-compiler-riscv64",
+      "riscv64-musl"    : ":cc-compiler-riscv64-musl",
+      "riscv64|gcc"     : ":cc-compiler-riscv64",
+      "s390x"           : ":cc-compiler-s390x",
+      "s390x|gcc"       : ":cc-compiler-s390x",
+      "ppc64el"         : ":cc-compiler-ppc64el",
+      "ppc64el|gcc"     : ":cc-compiler-ppc64el",
       "x64_windows|msvc-cl": ":cc-compiler-x64_windows",
       "x64_windows|msvc-cl-x64": ":cc-compiler-x64_windows",
       "x64_windows|msvc-cl-arm64": "cc-compiler-arm64_windows",
@@ -58,6 +60,20 @@ cc_toolchain(
 )
 
 cc_toolchain_config(name = "aarch64-config", cpu = "aarch64")
+
+cc_toolchain(
+    name = "cc-compiler-aarch64-musl",
+    toolchain_config = ":aarch64-config-musl",
+
+    all_files = ":empty",
+    compiler_files = ":empty",
+    dwp_files = ":empty",
+    linker_files = ":empty",
+    objcopy_files = ":empty",
+    strip_files = ":empty",
+)
+
+cc_toolchain_config(name = "aarch64-config-musl", cpu = "aarch64-musl")
 
 cc_toolchain(
     name = "cc-compiler-armv7a",
@@ -130,6 +146,20 @@ cc_toolchain(
 
 cc_toolchain_config(name = "riscv64-config", cpu = "riscv64")
 
+cc_toolchain(
+    name = "cc-compiler-riscv64-musl",
+    toolchain_config = ":riscv64-config-musl",
+
+    all_files = ":empty",
+    compiler_files = ":empty",
+    dwp_files = ":empty",
+    linker_files = ":empty",
+    objcopy_files = ":empty",
+    strip_files = ":empty",
+)
+
+cc_toolchain_config(name = "riscv64-config-musl", cpu = "riscv64-musl")
+
 toolchain(
     name = "cc-toolchain-riscv64",
     exec_compatible_with = [
@@ -141,6 +171,20 @@ toolchain(
         "@platforms//os:linux",
     ],
     toolchain = ":cc-compiler-riscv64",
+    toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
+)
+
+toolchain(
+    name = "cc-toolchain-riscv64-musl",
+    exec_compatible_with = [
+        "@platforms//cpu:riscv64",
+        "@platforms//os:linux",
+    ],
+    target_compatible_with = [
+        "@platforms//cpu:riscv64",
+        "@platforms//os:linux",
+    ],
+    toolchain = ":cc-compiler-riscv64-musl",
     toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
 )
 
