@@ -121,7 +121,7 @@ CXX_BUILTIN_INCLUDE_DIRECTORIES = {
 ADDITIONAL_SYSTEM_INCLUDE_DIRECTORIES = [%{additional_system_include_directories}%]
 
 TOOL_PATH_PREFIX = {
-    "k8":      "/usr/bin/",
+    "k8":      "/usr/bin/x86_64-linux-gnu-",
     "armv7a":  "/usr/bin/arm-linux-gnueabihf-",
     "armv6":   "%{bcm2708_toolchain_root}%/arm-linux-gnueabihf/bin/arm-linux-gnueabihf-",
     "aarch64": "/usr/bin/aarch64-linux-gnu-",
